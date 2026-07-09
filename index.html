@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- saved from url=(0045)file:///C:/Users/user/Downloads/index_11.html -->
+<!-- saved from url=(0045)file:///C:/Users/user/Downloads/index_18.html -->
 <html lang="ko"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -112,14 +112,14 @@ body{font-family:'Noto Sans KR',sans-serif;background:#f0f0f0;color:#222;height:
 .ref-wrap{transition:none;}
 .ref-wrap:hover img{border-color:#ff9800;}
 </style>
-<link rel="stylesheet" href="./DA 배너 에디터_files/tabler-icons.min.css">
+<link rel="stylesheet" href="./index_files/tabler-icons.min.css">
 </head>
 <body>
 <div id="modeBanner"></div>
 <div class="topbar">
   <h1>🎨 DA 배너 에디터</h1>
   <div class="sep"></div>
-  <button class="btn btn-ghost" id="undoBtn" onclick="undo()" disabled="" title="Ctrl+Z"><i class="ti ti-arrow-back-up"></i></button>
+  <button class="btn btn-ghost" id="undoBtn" onclick="undo()" title="Ctrl+Z"><i class="ti ti-arrow-back-up"></i></button>
   <button class="btn btn-ghost" id="redoBtn" onclick="redo()" disabled="" title="Ctrl+Y"><i class="ti ti-arrow-forward-up"></i></button>
   <div class="sep"></div>
   <button class="btn btn-ghost" onclick="saveAll()"><i class="ti ti-device-floppy"></i> 저장</button>
@@ -139,12 +139,12 @@ body{font-family:'Noto Sans KR',sans-serif;background:#f0f0f0;color:#222;height:
       <span>배너 목록</span>
       <button class="btn btn-ghost" style="padding:3px 8px;font-size:11px;" onclick="addBanner()">+ 추가</button>
     </div>
-    <div class="blist-scroll" id="blistScroll"></div>
+    <div class="blist-scroll" id="blistScroll"><div class="bcard active" data-bid="b1" id="bl-b1"><div class="bcard-name"><input id="bname-b1" value="정사각형 (1200×1200)" onclick="event.stopPropagation()" oninput="renameBanner(&#39;b1&#39;,this.value)"></div><div class="bcard-size" id="bcardsize-b1">1200 × 1200</div><span class="bcard-del" onclick="event.stopPropagation();deleteBannerById(&#39;b1&#39;)">✕</span></div></div>
   </div>
 
   <div class="canvas-area" id="canvasArea">
-    <div id="selBox"></div>
-    <div class="canvas-inner" id="canvasInner"></div>
+    <div id="selBox" style="display: none; left: 929px; top: 118px; width: 0px; height: 0px;"></div>
+    <div class="canvas-inner" id="canvasInner"><div class="banner-wrap" id="bw-b1" style="left: 40px; top: 40px;"><div class="banner-label"><span id="blbl-b1" style="font-weight:600;color:#666;">정사각형 (1200×1200)</span><span>—</span><span id="bsizelbl-b1">1200×1200</span></div><div class="banner-box active-banner" data-bid="b1" id="bbox-b1" style="width: 480px; height: 480px; background: rgb(26, 58, 42);"><div class="el-item" data-key="badge-timer" data-bid="b1" tabindex="0" style="left: 24px; top: 24px; opacity: 1;"><div style="background:#2d7a4f;color:#fff;font-size:12px;font-weight:700;padding:5px 12px;border-radius:4px;letter-spacing:.5px;white-space:nowrap;"></div><div data-handle="se" style="position: absolute; background: rgb(194, 96, 58); border-radius: 2px; z-index: 20; cursor: nwse-resize; display: none; width: 9px; height: 9px; right: -4px; bottom: -4px;"></div><div data-handle="e" style="position: absolute; background: rgb(194, 96, 58); border-radius: 2px; z-index: 20; cursor: ew-resize; display: none; width: 7px; height: 18px; right: -4px; top: 50%; transform: translateY(-50%);"></div><div data-handle="s" style="position: absolute; background: rgb(194, 96, 58); border-radius: 2px; z-index: 20; cursor: ns-resize; display: none; width: 18px; height: 7px; bottom: -4px; left: 50%; transform: translateX(-50%);"></div></div><div class="el-item" data-key="badge-discount" data-bid="b1" tabindex="0" style="top: 24px; right: 24px; opacity: 0;"><div style="background:#fff;color:#0F2436;font-size:12px;font-weight:900;padding:6px 12px;border-radius:4px;line-height:1.3;text-align:center;"><br><span style="font-size:9px;font-weight:700;color:#2d7a4f;">할인 중</span></div><div data-handle="se" style="position: absolute; background: rgb(194, 96, 58); border-radius: 2px; z-index: 20; cursor: nwse-resize; display: none; width: 9px; height: 9px; right: -4px; bottom: -4px;"></div><div data-handle="e" style="position: absolute; background: rgb(194, 96, 58); border-radius: 2px; z-index: 20; cursor: ew-resize; display: none; width: 7px; height: 18px; right: -4px; top: 50%; transform: translateY(-50%);"></div><div data-handle="s" style="position: absolute; background: rgb(194, 96, 58); border-radius: 2px; z-index: 20; cursor: ns-resize; display: none; width: 18px; height: 7px; bottom: -4px; left: 50%; transform: translateX(-50%);"></div></div><div class="el-item" data-key="model" data-bid="b1" tabindex="0" style="left: 50%; top: 140px; width: 240px; height: 260px; opacity: 1;"><div style="width:100%;height:100%;background:linear-gradient(160deg,#1a3a55,#0d2035);border:2px dashed rgba(255,255,255,0.12);display:flex;flex-direction:column;align-items:center;justify-content:center;border-radius:8px 8px 0 0;"><div style="font-size:28px;margin-bottom:6px;">👤</div><p style="font-size:9px;color:rgba(255,255,255,0.25);text-align:center;line-height:1.7;">남성 모델<br>정면 착용샷</p></div><div data-handle="se" style="position: absolute; background: rgb(194, 96, 58); border-radius: 2px; z-index: 20; cursor: nwse-resize; display: none; width: 9px; height: 9px; right: -4px; bottom: -4px;"></div><div data-handle="e" style="position: absolute; background: rgb(194, 96, 58); border-radius: 2px; z-index: 20; cursor: ew-resize; display: none; width: 7px; height: 18px; right: -4px; top: 50%; transform: translateY(-50%);"></div><div data-handle="s" style="position: absolute; background: rgb(194, 96, 58); border-radius: 2px; z-index: 20; cursor: ns-resize; display: none; width: 18px; height: 7px; bottom: -4px; left: 50%; transform: translateX(-50%);"></div></div><div class="el-item" data-key="kicker" data-bid="b1" tabindex="0" style="left: 50%; top: 38px; width: 280px; opacity: 1;"><div style="font-size:10px;font-weight:700;color:#2d7a4f;letter-spacing:1.5px;text-transform:uppercase;white-space:nowrap;">운동만 해, 식단은 디자인 밀이 하게</div><div data-handle="se" style="position: absolute; background: rgb(194, 96, 58); border-radius: 2px; z-index: 20; cursor: nwse-resize; display: none; width: 9px; height: 9px; right: -4px; bottom: -4px;"></div><div data-handle="e" style="position: absolute; background: rgb(194, 96, 58); border-radius: 2px; z-index: 20; cursor: ew-resize; display: none; width: 7px; height: 18px; right: -4px; top: 50%; transform: translateY(-50%);"></div><div data-handle="s" style="position: absolute; background: rgb(194, 96, 58); border-radius: 2px; z-index: 20; cursor: ns-resize; display: none; width: 18px; height: 7px; bottom: -4px; left: 50%; transform: translateX(-50%);"></div></div><div class="el-item" data-key="headline" data-bid="b1" tabindex="0" style="left: 50%; top: 68px; width: 340px; opacity: 1;"><div style="font-size:36px;font-weight:900;color:#fff;line-height:1.25;word-break:keep-all;">탄단지 계산<br><em style="color:#F5A623;font-style:normal;">0분 식단</em></div><div data-handle="se" style="position: absolute; background: rgb(194, 96, 58); border-radius: 2px; z-index: 20; cursor: nwse-resize; display: none; width: 9px; height: 9px; right: -4px; bottom: -4px;"></div><div data-handle="e" style="position: absolute; background: rgb(194, 96, 58); border-radius: 2px; z-index: 20; cursor: ew-resize; display: none; width: 7px; height: 18px; right: -4px; top: 50%; transform: translateY(-50%);"></div><div data-handle="s" style="position: absolute; background: rgb(194, 96, 58); border-radius: 2px; z-index: 20; cursor: ns-resize; display: none; width: 18px; height: 7px; bottom: -4px; left: 50%; transform: translateX(-50%);"></div></div><div class="el-item" data-key="subline" data-bid="b1" tabindex="0" style="left: 24px; top: 340px; width: 260px; opacity: 1;"><div style="font-size:13px;color:rgba(255,255,255,0.65);line-height:1.7;word-break:keep-all;">인당 방식 약 500kcal대</div><div data-handle="se" style="position: absolute; background: rgb(194, 96, 58); border-radius: 2px; z-index: 20; cursor: nwse-resize; display: none; width: 9px; height: 9px; right: -4px; bottom: -4px;"></div><div data-handle="e" style="position: absolute; background: rgb(194, 96, 58); border-radius: 2px; z-index: 20; cursor: ew-resize; display: none; width: 7px; height: 18px; right: -4px; top: 50%; transform: translateY(-50%);"></div><div data-handle="s" style="position: absolute; background: rgb(194, 96, 58); border-radius: 2px; z-index: 20; cursor: ns-resize; display: none; width: 18px; height: 7px; bottom: -4px; left: 50%; transform: translateX(-50%);"></div></div><div class="el-item" data-key="icons" data-bid="b1" tabindex="0" style="left: 24px; top: 400px; opacity: 0;"><div style="display:flex;gap:6px;"><div style="background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.12);border-radius:5px;padding:6px 8px;display:flex;flex-direction:column;align-items:center;gap:3px;min-width:60px;"><span style="font-size:14px;color:#F5A623;">●</span><p style="font-size:8px;color:rgba(255,255,255,0.5);text-align:center;line-height:1.3;">절단방지 와이어</p></div><div style="background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.12);border-radius:5px;padding:6px 8px;display:flex;flex-direction:column;align-items:center;gap:3px;min-width:60px;"><span style="font-size:14px;color:#F5A623;">●</span><p style="font-size:8px;color:rgba(255,255,255,0.5);text-align:center;line-height:1.3;">RFID 차단</p></div><div style="background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.12);border-radius:5px;padding:6px 8px;display:flex;flex-direction:column;align-items:center;gap:3px;min-width:60px;"><span style="font-size:14px;color:#F5A623;">●</span><p style="font-size:8px;color:rgba(255,255,255,0.5);text-align:center;line-height:1.3;">안전 잠금장치</p></div></div><div data-handle="se" style="position: absolute; background: rgb(194, 96, 58); border-radius: 2px; z-index: 20; cursor: nwse-resize; display: none; width: 9px; height: 9px; right: -4px; bottom: -4px;"></div><div data-handle="e" style="position: absolute; background: rgb(194, 96, 58); border-radius: 2px; z-index: 20; cursor: ew-resize; display: none; width: 7px; height: 18px; right: -4px; top: 50%; transform: translateY(-50%);"></div><div data-handle="s" style="position: absolute; background: rgb(194, 96, 58); border-radius: 2px; z-index: 20; cursor: ns-resize; display: none; width: 18px; height: 7px; bottom: -4px; left: 50%; transform: translateX(-50%);"></div></div><div class="el-item" data-key="cta" data-bid="b1" tabindex="0" style="left: 0px; bottom: 0px; width: 100%; height: 44px; opacity: 1;"><div style="background:#2d7a4f;color:#fff;font-size:13px;font-weight:700;padding:9px 16px;border-radius:5px;white-space:nowrap;">식단 전용 10% 쿠폰 받으러 가기  ›</div><div data-handle="se" style="position: absolute; background: rgb(194, 96, 58); border-radius: 2px; z-index: 20; cursor: nwse-resize; display: none; width: 9px; height: 9px; right: -4px; bottom: -4px;"></div><div data-handle="e" style="position: absolute; background: rgb(194, 96, 58); border-radius: 2px; z-index: 20; cursor: ew-resize; display: none; width: 7px; height: 18px; right: -4px; top: 50%; transform: translateY(-50%);"></div><div data-handle="s" style="position: absolute; background: rgb(194, 96, 58); border-radius: 2px; z-index: 20; cursor: ns-resize; display: none; width: 18px; height: 7px; bottom: -4px; left: 50%; transform: translateX(-50%);"></div></div><div class="el-item" data-key="logo" data-bid="b1" tabindex="0" style="top: 24px; right: 24px; opacity: 1;"><div style="display:flex;align-items:center;gap:6px;"><div style="background:#fff;padding:4px 10px;border-radius:3px;"><span style="font-size:11px;font-weight:900;color:#0F2436;letter-spacing:1px;">DESIGN MEAL</span></div><span style="font-size:9px;color:rgba(255,255,255,0.3);"></span></div><div data-handle="se" style="position: absolute; background: rgb(194, 96, 58); border-radius: 2px; z-index: 20; cursor: nwse-resize; display: none; width: 9px; height: 9px; right: -4px; bottom: -4px;"></div><div data-handle="e" style="position: absolute; background: rgb(194, 96, 58); border-radius: 2px; z-index: 20; cursor: ew-resize; display: none; width: 7px; height: 18px; right: -4px; top: 50%; transform: translateY(-50%);"></div><div data-handle="s" style="position: absolute; background: rgb(194, 96, 58); border-radius: 2px; z-index: 20; cursor: ns-resize; display: none; width: 18px; height: 7px; bottom: -4px; left: 50%; transform: translateX(-50%);"></div></div><span id="slbl-b1" style="position: absolute; bottom: 4px; right: 7px; font-size: 8px; color: rgba(255, 255, 255, 0.15); pointer-events: none;">1200×1200</span></div></div></div>
   </div>
 
   <div class="epanel">
@@ -221,16 +221,16 @@ body{font-family:'Noto Sans KR',sans-serif;background:#f0f0f0;color:#222;height:
       </div>
       <div class="field"><label>강조색</label><input type="color" id="f-accent" value="#C2603A" oninput="applyStyle(&#39;accent&#39;,this.value)"></div>
       <div class="field"><label>헤드라인 크기</label>
-        <div class="range-row"><input type="range" min="10" max="60" value="28" id="f-hlsize" oninput="applyStyle(&#39;hlsize&#39;,this.value);document.getElementById(&#39;hlsizeVal&#39;).textContent=this.value+&#39;px&#39;"><span class="rval" id="hlsizeVal">28px</span></div>
+        <div class="range-row"><input type="range" min="10" max="60" value="28" id="f-hlsize" oninput="applyStyle(&#39;hlsize&#39;,this.value);document.getElementById(&#39;hlsizeVal&#39;).textContent=this.value+&#39;px&#39;"><span class="rval" id="hlsizeVal">36px</span></div>
       </div>
       <div class="field"><label>서브카피 크기</label>
-        <div class="range-row"><input type="range" min="8" max="24" value="11" id="f-subsize" oninput="applyStyle(&#39;subsize&#39;,this.value);document.getElementById(&#39;subsizeVal&#39;).textContent=this.value+&#39;px&#39;"><span class="rval" id="subsizeVal">11px</span></div>
+        <div class="range-row"><input type="range" min="8" max="24" value="11" id="f-subsize" oninput="applyStyle(&#39;subsize&#39;,this.value);document.getElementById(&#39;subsizeVal&#39;).textContent=this.value+&#39;px&#39;"><span class="rval" id="subsizeVal">13px</span></div>
       </div>
       <div class="field"><label>CTA 크기</label>
-        <div class="range-row"><input type="range" min="8" max="24" value="11" id="f-ctasize" oninput="applyStyle(&#39;ctasize&#39;,this.value);document.getElementById(&#39;ctasizeVal&#39;).textContent=this.value+&#39;px&#39;"><span class="rval" id="ctasizeVal">11px</span></div>
+        <div class="range-row"><input type="range" min="8" max="24" value="11" id="f-ctasize" oninput="applyStyle(&#39;ctasize&#39;,this.value);document.getElementById(&#39;ctasizeVal&#39;).textContent=this.value+&#39;px&#39;"><span class="rval" id="ctasizeVal">13px</span></div>
       </div>
       <div class="field"><label>배지 크기</label>
-        <div class="range-row"><input type="range" min="8" max="24" value="11" id="f-badgesize" oninput="applyStyle(&#39;badgesize&#39;,this.value);document.getElementById(&#39;badgesizeVal&#39;).textContent=this.value+&#39;px&#39;"><span class="rval" id="badgesizeVal">11px</span></div>
+        <div class="range-row"><input type="range" min="8" max="24" value="11" id="f-badgesize" oninput="applyStyle(&#39;badgesize&#39;,this.value);document.getElementById(&#39;badgesizeVal&#39;).textContent=this.value+&#39;px&#39;"><span class="rval" id="badgesizeVal">12px</span></div>
       </div>
     </div>
     <div class="ep-section" style="font-size:11px;color:#aaa;line-height:2;">
@@ -249,7 +249,7 @@ body{font-family:'Noto Sans KR',sans-serif;background:#f0f0f0;color:#222;height:
 
 
 <!-- TEMPLATE MODAL -->
-<div id="templateOverlay" style="position: fixed; inset: 0px; background: rgba(0, 0, 0, 0.45); z-index: 600; align-items: center; justify-content: center; flex-flow: column wrap;" class="show">
+<div id="templateOverlay" style="position: fixed; inset: 0px; background: rgba(0, 0, 0, 0.45); z-index: 600; align-items: center; justify-content: center; flex-flow: column wrap;" class="">
   <div style="background:#fff;border-radius:14px;padding:28px 32px;width:600px;max-width:95vw;box-shadow:0 16px 60px rgba(0,0,0,0.2);">
     <h2 style="font-size:16px;font-weight:700;color:#111;margin-bottom:4px;">템플릿 선택</h2>
     <p style="font-size:12px;color:#aaa;margin-bottom:20px;">배너 형태를 선택하면 레이아웃이 자동으로 설정돼요</p>
@@ -750,23 +750,7 @@ document.addEventListener('mousemove',e=>{
       el.style.top=(startTop+dy)+'px'; el.style.bottom='';
     });
   }
-  // 레퍼런스 드래그
-  if(refDragging){
-    const ca=document.getElementById('canvasArea');
-    const ci=document.getElementById('canvasInner');
-    const cir=ci.getBoundingClientRect();
-    const nx=e.clientX - cir.left - refDragging.ox;
-    const ny=e.clientY - cir.top  - refDragging.oy;
-    refDragging.wrap.style.left=Math.max(0,nx)+'px';
-    refDragging.wrap.style.top=Math.max(0,ny)+'px';
-  }
-  // 레퍼런스 리사이즈
-  if(refResizing){
-    const dw=e.clientX-refResizeStartX;
-    const nw=Math.max(80,refResizeStartW+dw);
-    refResizing.img.style.width=nw+'px';
-    refResizing.img.style.height='auto';
-  }
+
 });
 
 document.addEventListener('mouseup',e=>{
@@ -798,8 +782,7 @@ document.addEventListener('mouseup',e=>{
     multiSelected.forEach(({el,bid,key})=>{const b=getBanner(bid);if(b)saveElPos(b,key,el);});
     pushHist(); multiDrag=null;
   }
-  if(refDragging) refDragging=null;
-  if(refResizing) refResizing=null;
+
 });
 
 function getElsInRect(x1,y1,x2,y2,bid){
@@ -1245,60 +1228,82 @@ function addRefImages(input){
 function createRefImage(src){
   const ci = document.getElementById('canvasInner');
   const ca = document.getElementById('canvasArea');
-  // 현재 뷰포트 중앙에 배치
   const cx = ca.scrollLeft + ca.clientWidth/2 - 160;
   const cy = ca.scrollTop  + ca.clientHeight/2 - 120;
+
   const wrap = document.createElement('div');
-  wrap.className = 'ref-wrap';
-  wrap.style.cssText = `position:absolute;left:${Math.max(0,cx)}px;top:${Math.max(0,cy)}px;z-index:300;user-select:none;`;
+  wrap.style.cssText = `position:absolute;left:${Math.max(0,cx)}px;top:${Math.max(0,cy)}px;z-index:300;user-select:none;display:inline-block;`;
+
+  // 드래그 공통 함수
+  function startDrag(e){
+    e.preventDefault(); e.stopPropagation();
+    const startX = e.clientX;
+    const startY = e.clientY;
+    const startL = parseFloat(wrap.style.left)||0;
+    const startT = parseFloat(wrap.style.top)||0;
+    function onMove(ev){
+      wrap.style.left = Math.max(0, startL + ev.clientX - startX) + 'px';
+      wrap.style.top  = Math.max(0, startT + ev.clientY - startY) + 'px';
+    }
+    function onUp(){ document.removeEventListener('mousemove', onMove); document.removeEventListener('mouseup', onUp); }
+    document.addEventListener('mousemove', onMove);
+    document.addEventListener('mouseup', onUp);
+  }
 
   // 라벨
   const lbl = document.createElement('div');
   lbl.style.cssText = 'font-size:10px;color:#888;margin-bottom:4px;display:flex;align-items:center;justify-content:space-between;cursor:grab;gap:8px;';
-  // lbl children added via DOM
-  lbl.addEventListener('mousedown', e => {
-    if(e.target.tagName==='SPAN'&&e.target.textContent==='✕') return;
-    e.preventDefault(); e.stopPropagation();
-    const r = wrap.getBoundingClientRect();
-    refDragging = {wrap, ox: e.clientX-r.left, oy: e.clientY-r.top};
-  });
-  // 이미지도 드래그 가능하게
-  img.addEventListener('mousedown', e => {
-    e.preventDefault(); e.stopPropagation();
-    const r = wrap.getBoundingClientRect();
-    refDragging = {wrap, ox: e.clientX-r.left, oy: e.clientY-r.top};
-  });
+  const badge = document.createElement('span');
+  badge.style.cssText = 'background:#fff3cd;color:#856404;padding:2px 7px;border-radius:4px;font-weight:600;font-size:10px;';
+  badge.textContent = '📌 레퍼런스';
+  const delBtn = document.createElement('span');
+  delBtn.style.cssText = 'cursor:pointer;color:#ccc;padding:2px 6px;border-radius:3px;font-size:12px;background:#f0f0f0;';
+  delBtn.textContent = '✕';
+  delBtn.onclick = () => wrap.remove();
+  lbl.appendChild(badge); lbl.appendChild(delBtn);
+  lbl.addEventListener('mousedown', e => { if(e.target===delBtn) return; startDrag(e); });
   wrap.appendChild(lbl);
 
   // 이미지
   const img = document.createElement('img');
-  img.style.cssText = 'display:block;width:320px;height:auto;border-radius:6px;box-shadow:0 4px 20px rgba(0,0,0,0.2);border:2px solid #ffc107;';
+  img.style.cssText = 'display:block;width:320px;height:auto;border-radius:6px;box-shadow:0 4px 20px rgba(0,0,0,0.2);border:2px solid #ffc107;cursor:grab;';
   img.draggable = false;
-  img.onerror = () => toast('❌ 이미지 로드 실패');
-  img.onload = () => console.log('ref image loaded', img.naturalWidth, img.naturalHeight);
   img.src = src;
+  img.addEventListener('mousedown', startDrag);
   wrap.appendChild(img);
 
-  // 리사이즈 핸들 (우하단)
+  // 리사이즈 핸들
   const handle = document.createElement('div');
-  handle.style.cssText = 'position:absolute;right:-6px;bottom:-6px;width:14px;height:14px;background:#ffc107;border-radius:3px;cursor:nwse-resize;z-index:10;border:2px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,0.2);';
+  handle.style.cssText = 'position:absolute;right:-6px;bottom:-6px;width:14px;height:14px;background:#ffc107;border-radius:3px;cursor:nwse-resize;z-index:10;border:2px solid #fff;';
   handle.addEventListener('mousedown', e => {
     e.stopPropagation(); e.preventDefault();
-    refResizing = {img, wrap};
-    refResizeStartX = e.clientX; refResizeStartY = e.clientY;
-    refResizeStartW = img.offsetWidth; refResizeStartH = img.offsetHeight;
+    const startX = e.clientX, startW = img.offsetWidth;
+    function onMove(ev){ img.style.width = Math.max(80, startW + ev.clientX - startX) + 'px'; }
+    function onUp(){ document.removeEventListener('mousemove', onMove); document.removeEventListener('mouseup', onUp); }
+    document.addEventListener('mousemove', onMove);
+    document.addEventListener('mouseup', onUp);
   });
   wrap.appendChild(handle);
 
-  // 불투명도 슬라이더
+  // 투명도
   const opRow = document.createElement('div');
   opRow.style.cssText = 'display:flex;align-items:center;gap:6px;margin-top:5px;';
-  // opRow children added via DOM
-  img.style.opacity = '1';
+  const opLabel = document.createElement('span');
+  opLabel.style.cssText = 'font-size:10px;color:#aaa;white-space:nowrap;';
+  opLabel.textContent = '투명도';
+  const opSlider = document.createElement('input');
+  opSlider.type='range'; opSlider.min='10'; opSlider.max='100'; opSlider.value='100';
+  opSlider.style.cssText = 'flex:1;accent-color:#ffc107;';
+  opSlider.addEventListener('input', () => img.style.opacity = opSlider.value/100);
+  const opVal = document.createElement('span');
+  opVal.style.cssText = 'font-size:10px;color:#aaa;min-width:28px;';
+  opVal.textContent = '100%';
+  opSlider.addEventListener('input', () => { img.style.opacity=opSlider.value/100; opVal.textContent=opSlider.value+'%'; });
+  opRow.appendChild(opLabel); opRow.appendChild(opSlider); opRow.appendChild(opVal);
   wrap.appendChild(opRow);
 
-  document.getElementById('canvasInner').appendChild(wrap);
-  toast('📌 레퍼런스 이미지 추가됐어요! 라벨 드래그로 이동, 노란 핸들로 크기 조절');
+  ci.appendChild(wrap);
+  toast('📌 레퍼런스 추가! 이미지 드래그로 이동, 노란 핸들로 크기 조절');
 }
 
 // ref 드래그/리사이즈 — 기존 mousemove/mouseup에 합산
