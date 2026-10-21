@@ -2,75 +2,104 @@
 <html lang="ko">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>영업노트 설정 가이드</title>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="관리자용 영업노트 설치·업데이트·설정 가이드">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;600;700;800&display=swap">
 <style>
-  :root { --ink: #17222b; --ink-2: #4d5a66; --ink-3: #8794a0; --line: #dfe5e9; --paper: #f3f6f7; --teal: #0f5c57; --teal-soft: #e3efee; --gold: #f0b323; --gold-soft: #fff5d9; --hot: #d4472b; }
+  /* 앱과 같은 색: 짙은 청록 머리띠 + 금색 도장. 한 줄 본문 폭 + 번호 단계 카드 */
+  :root {
+    --bg: #f2f5f6; --card: #ffffff; --ink: #17222b; --ink-2: #4d5a66; --ink-3: #7d8a96; --line: #dfe5e9;
+    --teal: #0f5c57; --teal-ink: #0f5c57; --teal-soft: #e3efee; --gold: #f0b323; --gold-soft: #fff5d9;
+    --hot: #c8401f; --hot-soft: #fdeee9; --code: #e9eef1; --hero-ink: #ffffff; --hero-sub: #cfe3e1;
+    --f-body: "Pretendard", "Noto Sans KR", "맑은 고딕", "Malgun Gothic", system-ui, sans-serif;
+    --f-mono: Consolas, "D2Coding", ui-monospace, monospace;
+  }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+    --bg: #11181d; --card: #18222a; --ink: #e6edf1; --ink-2: #b3c0c9; --ink-3: #85939e; --line: #2a3843;
+    --teal: #0f5c57; --teal-ink: #6cc7bd; --teal-soft: #173a38; --gold: #f0b323; --gold-soft: #3a3016;
+    --hot: #ff8a6b; --hot-soft: #3d221b; --code: #24323c; --hero-ink: #ffffff; --hero-sub: #cfe3e1; color-scheme: dark; } }
+  :root[data-theme="dark"] {
+    --bg: #11181d; --card: #18222a; --ink: #e6edf1; --ink-2: #b3c0c9; --ink-3: #85939e; --line: #2a3843;
+    --teal: #0f5c57; --teal-ink: #6cc7bd; --teal-soft: #173a38; --gold: #f0b323; --gold-soft: #3a3016;
+    --hot: #ff8a6b; --hot-soft: #3d221b; --code: #24323c; --hero-ink: #ffffff; --hero-sub: #cfe3e1; color-scheme: dark; }
   * { box-sizing: border-box; }
-  body { margin: 0; background: var(--paper); color: var(--ink); font-family: "Pretendard", "맑은 고딕", "Malgun Gothic", system-ui, sans-serif; line-height: 1.7; font-size: 15.5px; }
-  .hero { background: var(--teal); color: #fff; padding: 44px 20px 36px; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--f-body); line-height: 1.7; font-size: 15.5px; }
+  a { color: var(--teal-ink); }
+  .band { padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+  .hero { background: var(--teal); color: var(--hero-ink); padding-block: 40px 32px; }
   .hero-in, .wrap { max-width: 860px; margin: 0 auto; }
-  .hero h1 { font-size: 34px; margin: 0 0 8px; letter-spacing: -0.03em; }
-  .hero p { margin: 0; color: #d3e6e4; max-width: 600px; }
-  .stamps { display: flex; gap: 8px; margin-bottom: 18px; }
+  .eyebrow { font-size: 13px; letter-spacing: .08em; color: var(--gold); font-weight: 700; margin: 0 0 6px; }
+  .hero h1 { font-size: 34px; margin: 0 0 8px; letter-spacing: -0.03em; line-height: 1.25; text-wrap: balance; }
+  .hero p { margin: 0; color: var(--hero-sub); max-width: 620px; }
+  .stamps { display: flex; gap: 8px; margin-bottom: 16px; }
   .stamps i { width: 30px; height: 30px; border-radius: 50%; border: 2px dashed rgba(255,255,255,.45); display: grid; place-items: center; font-style: normal; font-weight: 800; font-size: 13px; }
-  .stamps i.on { background: var(--gold); border: 2px solid var(--gold); color: var(--teal); transform: rotate(-8deg); }
-  .jump { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 22px; }
-  .jump a { color: #fff; border: 1px solid rgba(255,255,255,.4); border-radius: 18px; padding: 5px 14px; text-decoration: none; font-size: 14px; }
-  .wrap { padding: 8px 20px 80px; }
+  .stamps i.on { background: var(--gold); border: 2px solid var(--gold); color: #0b4743; transform: rotate(-8deg); }
+  .jump { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 20px; }
+  .jump a { color: #fff; border: 1px solid rgba(255,255,255,.4); border-radius: 18px; padding: 4px 13px; text-decoration: none; font-size: 14px; }
+  .jump a:hover, .jump a:focus-visible { background: rgba(255,255,255,.14); outline: none; }
+  .jump a.alt { background: var(--gold); border-color: var(--gold); color: #0b4743; font-weight: 700; }
+  .wrap { padding-block: 8px 72px; }
   section { margin-top: 44px; }
-  h2 { font-size: 24px; margin: 0 0 6px; letter-spacing: -0.02em; }
-  .who { color: var(--ink-3); margin: 0 0 18px; }
+  h2 { font-size: 24px; margin: 0 0 4px; letter-spacing: -0.02em; text-wrap: balance; }
+  .who { color: var(--ink-3); margin: 0 0 16px; }
   h3 { font-size: 17px; margin: 26px 0 8px; }
-  ol.steps { list-style: none; padding: 0; margin: 0; counter-reset: s; }
-  ol.steps > li { counter-increment: s; position: relative; padding: 14px 16px 14px 56px; background: #fff; border: 1px solid var(--line); border-radius: 10px; margin-bottom: 10px; }
-  ol.steps > li::before { content: counter(s); position: absolute; left: 16px; top: 14px; width: 26px; height: 26px; border-radius: 50%; background: var(--ink); color: #fff; display: grid; place-items: center; font-weight: 700; font-size: 13px; }
+  p { margin: 8px 0; }
+  ol.steps { list-style: none; padding: 0; margin: 0; counter-reset: s; display: grid; gap: 10px; }
+  ol.steps > li { counter-increment: s; position: relative; padding: 13px 16px 13px 54px; background: var(--card); border: 1px solid var(--line); border-radius: 10px; min-width: 0; }
+  ol.steps > li::before { content: counter(s); position: absolute; left: 15px; top: 14px; width: 26px; height: 26px; border-radius: 50%; background: var(--ink); color: var(--bg); display: grid; place-items: center; font-weight: 700; font-size: 13px; }
   ol.steps ul { margin: 6px 0 0; padding-left: 18px; }
-  code { font-family: Consolas, "맑은 고딕", monospace; background: #e9eef1; padding: 1px 6px; border-radius: 4px; font-size: .92em; }
-  .opt { display: inline-block; background: var(--teal-soft); color: var(--teal); font-weight: 700; padding: 0 8px; border-radius: 5px; }
-  .note { border-left: 4px solid var(--teal); background: var(--teal-soft); padding: 12px 16px; border-radius: 0 8px 8px 0; margin: 14px 0; }
-  .warn { border-left: 4px solid var(--hot); background: #fdeee9; padding: 12px 16px; border-radius: 0 8px 8px 0; margin: 14px 0; }
+  code { font-family: var(--f-mono); background: var(--code); padding: 1px 6px; border-radius: 4px; font-size: .9em; word-break: break-all; }
+  pre { background: var(--card); border: 1px solid var(--line); border-radius: 8px; padding: 10px 14px; overflow-x: auto; font-family: var(--f-mono); font-size: 13.5px; margin: 8px 0 0; }
+  .opt { display: inline-block; background: var(--teal-soft); color: var(--teal-ink); font-weight: 700; padding: 0 8px; border-radius: 5px; }
+  .ok { color: var(--teal-ink); font-weight: 700; }
+  .note, .warn { padding: 12px 16px; border-radius: 0 8px 8px 0; margin: 14px 0; }
+  .note { border-left: 4px solid var(--teal-ink); background: var(--teal-soft); }
+  .warn { border-left: 4px solid var(--hot); background: var(--hot-soft); }
+  .note ul, .warn ul { margin: 6px 0 0; padding-left: 18px; }
   .shots { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 18px; margin: 18px 0; }
-  figure { margin: 0; }
-  figure img { width: 100%; border-radius: 14px; border: 1px solid var(--line); box-shadow: 0 6px 20px rgba(23,34,43,.10); display: block; background: #fff; }
+  figure { margin: 0; min-width: 0; }
+  figure img { width: 100%; max-width: 100%; border-radius: 14px; border: 1px solid var(--line); box-shadow: 0 6px 20px rgba(23,34,43,.10); display: block; background: #fff; }
   figcaption { font-size: 13.5px; color: var(--ink-2); margin-top: 8px; }
   figcaption b { color: var(--ink); }
-  .routine { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 10px; }
-  .routine div { background: #fff; border: 1px solid var(--line); border-radius: 10px; padding: 14px 16px; }
-  .routine b { display: block; margin-bottom: 2px; }
-  .routine span { color: var(--ink-2); font-size: 14px; }
-  .routine em { font-style: normal; color: var(--teal); font-weight: 700; font-size: 13px; }
-  table { width: 100%; border-collapse: collapse; background: #fff; font-size: 14.5px; border: 1px solid var(--line); }
+  .split { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr); gap: 24px; align-items: start; }
+  .split > div { min-width: 0; }
+  .grid4 { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 10px; margin: 14px 0; }
+  .grid4 > div { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 12px 15px; }
+  .grid4 em { font-style: normal; color: var(--teal-ink); font-weight: 700; font-size: 13px; display: block; }
+  .grid4 b { display: block; }
+  .grid4 span { color: var(--ink-2); font-size: 14px; }
+  .tbl { overflow-x: auto; border: 1px solid var(--line); border-radius: 10px; background: var(--card); }
+  table { width: 100%; border-collapse: collapse; font-size: 14.5px; }
   th, td { border-bottom: 1px solid var(--line); padding: 10px 12px; text-align: left; vertical-align: top; }
-  th { background: #f7f9fa; font-weight: 700; white-space: nowrap; }
+  tr:last-child td { border-bottom: 0; }
+  th { background: var(--code); font-weight: 700; white-space: nowrap; }
+  td:first-child { white-space: nowrap; font-weight: 600; }
   footer { margin-top: 56px; padding-top: 14px; border-top: 1px solid var(--line); color: var(--ink-3); font-size: 13px; }
+  @media (max-width: 640px) { .split { grid-template-columns: minmax(0, 1fr); } td:first-child { white-space: normal; } }
   @media (max-width: 560px) { .hero h1 { font-size: 27px; } ol.steps > li { padding-left: 48px; } ol.steps > li::before { left: 12px; } }
-  @media print { body { background: #fff; } .hero { -webkit-print-color-adjust: exact; print-color-adjust: exact; } section, figure, li { break-inside: avoid; } }
-  .check { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin: 14px 0; }
-  .check div { background: #fff; border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; font-size: 14.5px; }
-  .check b { display: block; color: var(--teal); }
-  .ok { color: var(--teal); font-weight: 700; }
-  pre { background: #fff; border: 1px solid var(--line); border-radius: 8px; padding: 10px 14px; overflow-x: auto; font-size: 13.5px; margin: 8px 0 0; }
 </style>
-
 </head>
 <body>
-<header class="hero">
+<header class="hero band">
   <div class="hero-in">
+    <p class="eyebrow">관리자용</p>
     <h1>영업노트 설정 가이드</h1>
-    <p>관리자용 안내입니다. 처음 설치부터 코드 업데이트, 하루 목표·템플릿 같은 설정 변경, 팀원 공유까지 다룹니다. 설치는 한 번만 하면 되고 약 10분 걸립니다.</p>
+    <p>처음 설치부터 코드 업데이트, 하루 목표·템플릿 같은 설정 변경, 팀원 공유까지 다룹니다. 설치는 한 번만 하면 되고 약 10분 걸립니다.</p>
     <nav class="jump">
       <a href="#install">처음 설치</a>
       <a href="#update">코드 업데이트</a>
       <a href="#settings">설정 바꾸기</a>
       <a href="#share">팀원 공유</a>
       <a href="#faq">막혔을 때</a>
+      <a class="alt" href="guide.html">팀원 가이드 →</a>
     </nav>
   </div>
 </header>
 
-<div class="wrap">
+<div class="wrap band">
 
 <section id="install">
   <h2>처음 설치</h2>
@@ -108,7 +137,7 @@ Index.html  →  &lt;!DOCTYPE html&gt;</pre>
     <li>"Google에서 확인하지 않은 앱"이 나오면 <b>고급 → 영업노트(으)로 이동(안전하지 않음)</b> → <b>허용</b>. 사내에서 만든 앱이라 나오는 안내입니다.</li>
     <li>실행 로그에 <span class="ok">실행이 완료됨</span>이 나오면 시트로 돌아가 탭을 확인합니다.</li>
   </ol>
-  <div class="check">
+  <div class="grid4">
     <div><b>가망건</b>저장한 업체 목록</div>
     <div><b>연락이력</b>통화·메일·카톡 기록</div>
     <div><b>템플릿</b>기본 문구 6개 (이메일 3 · 카톡 3)</div>
@@ -149,14 +178,14 @@ Index.html  →  &lt;!DOCTYPE html&gt;</pre>
 <section id="settings">
   <h2>설정 바꾸기</h2>
   <p class="who">대부분 시트나 Code.gs 맨 위에서 바꿉니다</p>
-  <table>
+  <div class="tbl"><table>
     <tr><th>바꿀 것</th><th>어디서</th><th>반영</th></tr>
     <tr><td>메일·카톡 문구</td><td>시트 <code>템플릿</code> 탭에서 행 추가·수정·삭제. 유형은 <code>이메일</code> 또는 <code>카톡</code>, 이메일은 <code>제목</code>도 입력. 본문에 <code>{업체명}</code> <code>{담당자}</code> <code>{영업자}</code> 사용 가능</td><td>앱 새로고침</td></tr>
     <tr><td>하루 목표(도장 수)</td><td>Code.gs 맨 위 <code>var DAILY_GOAL = 5;</code></td><td>저장 후 <a href="#update">새 버전 배포</a></td></tr>
     <tr><td>회사명</td><td>Code.gs 맨 위 <code>var COMPANY_NAME = '엠피인터랙티브';</code> · 보내는 사람 이름(예: 정순홍 (엠피인터랙티브))에 쓰임</td><td>저장 후 새 버전 배포</td></tr>
     <tr><td>내 이름</td><td>앱 오른쪽 위 "○○○ 님" 누르기</td><td>바로</td></tr>
     <tr><td>가망건 데이터</td><td>시트 <code>가망건</code> 탭에서 직접 수정 가능. 머리글(1행)과 <code>ID</code> 열은 건드리지 마세요</td><td>앱 새로고침</td></tr>
-  </table>
+  </table></div>
   <div class="note">기본 템플릿의 회사명은 처음 설치할 때 템플릿 탭에 글자로 들어갑니다. <code>COMPANY_NAME</code>을 나중에 바꿨다면 템플릿 탭의 문구도 직접 고쳐 주세요.</div>
 </section>
 
@@ -164,15 +193,15 @@ Index.html  →  &lt;!DOCTYPE html&gt;</pre>
   <h2>팀원 공유</h2>
   <ol class="steps">
     <li><code>영업노트_DB</code> 시트(또는 폴더)를 팀원에게 <b>편집자</b>로 공유합니다. 각자 본인 계정으로 실행되므로 편집 권한이 없으면 저장되지 않습니다.</li>
-    <li>웹 앱 URL과 사용 가이드(<code>guide.html</code>)를 전달합니다.</li>
-    <li>팀원은 링크를 열고 권한 허용 → 이름 입력 → 휴대폰 <b>홈 화면에 추가</b>하면 끝입니다.</li>
+    <li>웹 앱 URL과 <a href="guide.html">팀원 가이드</a>를 전달합니다. 팀원은 가이드의 "처음 설정"만 따라 하면 됩니다.</li>
+    <li>팀원은 링크를 열고 권한 허용 → 이름 입력 → 휴대폰 <b>홈 화면에 추가</b>하면 끝입니다. (<a href="guide.html#start">팀원 처음 설정</a>)</li>
   </ol>
   <div class="note">팀원이 편집자이므로 원본 시트를 직접 볼 수 있습니다. 팀 공용 영업 데이터라는 점을 안내해 주세요.</div>
 </section>
 
 <section id="faq">
   <h2>막혔을 때</h2>
-  <table>
+  <div class="tbl"><table>
     <tr><th>증상</th><th>해결</th></tr>
     <tr><td>실행했는데 시트 탭이 안 생김</td><td>함수 선택칸이 <code>doGet</code>이었을 가능성이 큽니다. <code>getInitialData</code>로 바꿔 다시 실행하세요.</td></tr>
     <tr><td>배포 관리에서 배포 버튼이 회색</td><td>오른쪽 위 ✏️ 연필을 먼저 눌러 수정 모드로 바꾸세요.</td></tr>
@@ -181,7 +210,7 @@ Index.html  →  &lt;!DOCTYPE html&gt;</pre>
     <tr><td>"불러오지 못했습니다"</td><td>회사 계정으로 로그인했는지, 시트가 편집자로 공유됐는지 확인하세요.</td></tr>
     <tr><td>"이 앱은 Google에서 확인하지 않았습니다"</td><td><b>고급 → 영업노트(으)로 이동</b>. 회사 관리자가 막아 두었다면 허용을 요청하세요.</td></tr>
     <tr><td>"남은 발송 가능 건수" 오류</td><td>구글 정책상 하루 약 1,500통까지입니다. 다음 날 나눠 보내세요.</td></tr>
-  </table>
+  </table></div>
 </section>
 
 <footer>영업노트 설정 가이드 · 문의: 정순홍 (tnsghd7439@mymp.co.kr)</footer>
