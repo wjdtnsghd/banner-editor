@@ -1,0 +1,190 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>영업노트 설정 가이드</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<style>
+  :root { --ink: #17222b; --ink-2: #4d5a66; --ink-3: #8794a0; --line: #dfe5e9; --paper: #f3f6f7; --teal: #0f5c57; --teal-soft: #e3efee; --gold: #f0b323; --gold-soft: #fff5d9; --hot: #d4472b; }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--paper); color: var(--ink); font-family: "Pretendard", "맑은 고딕", "Malgun Gothic", system-ui, sans-serif; line-height: 1.7; font-size: 15.5px; }
+  .hero { background: var(--teal); color: #fff; padding: 44px 20px 36px; }
+  .hero-in, .wrap { max-width: 860px; margin: 0 auto; }
+  .hero h1 { font-size: 34px; margin: 0 0 8px; letter-spacing: -0.03em; }
+  .hero p { margin: 0; color: #d3e6e4; max-width: 600px; }
+  .stamps { display: flex; gap: 8px; margin-bottom: 18px; }
+  .stamps i { width: 30px; height: 30px; border-radius: 50%; border: 2px dashed rgba(255,255,255,.45); display: grid; place-items: center; font-style: normal; font-weight: 800; font-size: 13px; }
+  .stamps i.on { background: var(--gold); border: 2px solid var(--gold); color: var(--teal); transform: rotate(-8deg); }
+  .jump { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 22px; }
+  .jump a { color: #fff; border: 1px solid rgba(255,255,255,.4); border-radius: 18px; padding: 5px 14px; text-decoration: none; font-size: 14px; }
+  .wrap { padding: 8px 20px 80px; }
+  section { margin-top: 44px; }
+  h2 { font-size: 24px; margin: 0 0 6px; letter-spacing: -0.02em; }
+  .who { color: var(--ink-3); margin: 0 0 18px; }
+  h3 { font-size: 17px; margin: 26px 0 8px; }
+  ol.steps { list-style: none; padding: 0; margin: 0; counter-reset: s; }
+  ol.steps > li { counter-increment: s; position: relative; padding: 14px 16px 14px 56px; background: #fff; border: 1px solid var(--line); border-radius: 10px; margin-bottom: 10px; }
+  ol.steps > li::before { content: counter(s); position: absolute; left: 16px; top: 14px; width: 26px; height: 26px; border-radius: 50%; background: var(--ink); color: #fff; display: grid; place-items: center; font-weight: 700; font-size: 13px; }
+  ol.steps ul { margin: 6px 0 0; padding-left: 18px; }
+  code { font-family: Consolas, "맑은 고딕", monospace; background: #e9eef1; padding: 1px 6px; border-radius: 4px; font-size: .92em; }
+  .opt { display: inline-block; background: var(--teal-soft); color: var(--teal); font-weight: 700; padding: 0 8px; border-radius: 5px; }
+  .note { border-left: 4px solid var(--teal); background: var(--teal-soft); padding: 12px 16px; border-radius: 0 8px 8px 0; margin: 14px 0; }
+  .warn { border-left: 4px solid var(--hot); background: #fdeee9; padding: 12px 16px; border-radius: 0 8px 8px 0; margin: 14px 0; }
+  .shots { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 18px; margin: 18px 0; }
+  figure { margin: 0; }
+  figure img { width: 100%; border-radius: 14px; border: 1px solid var(--line); box-shadow: 0 6px 20px rgba(23,34,43,.10); display: block; background: #fff; }
+  figcaption { font-size: 13.5px; color: var(--ink-2); margin-top: 8px; }
+  figcaption b { color: var(--ink); }
+  .routine { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 10px; }
+  .routine div { background: #fff; border: 1px solid var(--line); border-radius: 10px; padding: 14px 16px; }
+  .routine b { display: block; margin-bottom: 2px; }
+  .routine span { color: var(--ink-2); font-size: 14px; }
+  .routine em { font-style: normal; color: var(--teal); font-weight: 700; font-size: 13px; }
+  table { width: 100%; border-collapse: collapse; background: #fff; font-size: 14.5px; border: 1px solid var(--line); }
+  th, td { border-bottom: 1px solid var(--line); padding: 10px 12px; text-align: left; vertical-align: top; }
+  th { background: #f7f9fa; font-weight: 700; white-space: nowrap; }
+  footer { margin-top: 56px; padding-top: 14px; border-top: 1px solid var(--line); color: var(--ink-3); font-size: 13px; }
+  @media (max-width: 560px) { .hero h1 { font-size: 27px; } ol.steps > li { padding-left: 48px; } ol.steps > li::before { left: 12px; } }
+  @media print { body { background: #fff; } .hero { -webkit-print-color-adjust: exact; print-color-adjust: exact; } section, figure, li { break-inside: avoid; } }
+  .check { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin: 14px 0; }
+  .check div { background: #fff; border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; font-size: 14.5px; }
+  .check b { display: block; color: var(--teal); }
+  .ok { color: var(--teal); font-weight: 700; }
+  pre { background: #fff; border: 1px solid var(--line); border-radius: 8px; padding: 10px 14px; overflow-x: auto; font-size: 13.5px; margin: 8px 0 0; }
+</style>
+
+</head>
+<body>
+<header class="hero">
+  <div class="hero-in">
+    <h1>영업노트 설정 가이드</h1>
+    <p>관리자용 안내입니다. 처음 설치부터 코드 업데이트, 하루 목표·템플릿 같은 설정 변경, 팀원 공유까지 다룹니다. 설치는 한 번만 하면 되고 약 10분 걸립니다.</p>
+    <nav class="jump">
+      <a href="#install">처음 설치</a>
+      <a href="#update">코드 업데이트</a>
+      <a href="#settings">설정 바꾸기</a>
+      <a href="#share">팀원 공유</a>
+      <a href="#faq">막혔을 때</a>
+    </nav>
+  </div>
+</header>
+
+<div class="wrap">
+
+<section id="install">
+  <h2>처음 설치</h2>
+  <p class="who">관리자 1명이 한 번만 · 회사 구글 계정(@mymp.co.kr)으로 로그인한 상태에서 진행</p>
+
+  <h3>1. 스프레드시트 만들기</h3>
+  <ol class="steps">
+    <li>구글 드라이브에서 팀 공유 폴더(예: <code>6팀 영업노트_db</code>)를 엽니다.</li>
+    <li>빈 곳에서 마우스 오른쪽 클릭 → <b>Google 스프레드시트 → 빈 스프레드시트</b>.</li>
+    <li>왼쪽 위 "제목 없는 스프레드시트"를 눌러 이름을 <code>영업노트_DB</code>로 바꿉니다.</li>
+  </ol>
+
+  <h3>2. Apps Script에 코드 넣기</h3>
+  <ol class="steps">
+    <li>시트 메뉴 <b>확장 프로그램 → Apps Script</b>. 새 탭이 열립니다.</li>
+    <li>왼쪽 위 "제목 없는 프로젝트"를 눌러 <code>영업노트</code>로 바꿉니다. (처음 실행할 때 권한 창에 이 이름이 나옵니다)</li>
+    <li><b>Code.gs</b>: 기존 내용을 모두 지우고 <code>Code.gs</code> 파일 내용을 붙여넣습니다.</li>
+    <li><b>Index.html</b>: 왼쪽 <b>파일</b> 글자 옆 <b>+</b> → <b>HTML</b> → 이름에 <code>Index</code> 입력(확장자 없이) → 기본 내용을 모두 지우고 <code>Index.html</code> 파일 내용을 붙여넣습니다.</li>
+    <li><b>Ctrl + S</b>로 저장합니다. 제목 옆 "저장되지 않은 변경사항"이 사라져야 합니다.</li>
+  </ol>
+  <div class="warn"><b>자주 하는 실수</b>
+    <ul style="margin:6px 0 0;padding-left:18px">
+      <li>맨 위 <b>프로젝트 제목</b>에 <code>Index</code>를 입력하면 파일이 만들어지지 않습니다. 반드시 <b>파일 옆 +</b> 버튼으로 만드세요.</li>
+      <li>Index.html에 Code.gs 내용을 붙여넣지 않았는지 확인하세요. 두 파일의 첫 줄은 이렇게 달라야 합니다.</li>
+    </ul>
+    <pre>Code.gs     →  /**  * 영업노트 – 팀 공용 가망건 관리 웹앱 …
+Index.html  →  &lt;!DOCTYPE html&gt;</pre>
+  </div>
+
+  <h3>3. 처음 실행과 권한 허용</h3>
+  <ol class="steps">
+    <li>왼쪽에서 <b>Code.gs</b>를 누릅니다.</li>
+    <li>위쪽 <b>▷ 실행 · 디버그</b> 오른쪽의 함수 선택칸을 눌러 <code>getInitialData</code>를 고릅니다. (처음에는 <code>doGet</code>이 선택되어 있습니다. 그대로 실행하면 시트가 만들어지지 않습니다)</li>
+    <li><b>▷ 실행</b> → "승인 필요" 창에서 <b>권한 검토</b> → 회사 계정 선택.</li>
+    <li>"Google에서 확인하지 않은 앱"이 나오면 <b>고급 → 영업노트(으)로 이동(안전하지 않음)</b> → <b>허용</b>. 사내에서 만든 앱이라 나오는 안내입니다.</li>
+    <li>실행 로그에 <span class="ok">실행이 완료됨</span>이 나오면 시트로 돌아가 탭을 확인합니다.</li>
+  </ol>
+  <div class="check">
+    <div><b>가망건</b>저장한 업체 목록</div>
+    <div><b>연락이력</b>통화·메일·카톡 기록</div>
+    <div><b>템플릿</b>기본 문구 6개 (이메일 3 · 카톡 3)</div>
+    <div><b>사용자</b>앱에서 이름을 입력하면 채워짐</div>
+  </div>
+
+  <h3>4. 웹 앱으로 배포</h3>
+  <ol class="steps">
+    <li>Apps Script 오른쪽 위 <b>배포 → 새 배포</b>.</li>
+    <li><b>유형 선택</b> 옆 ⚙️ → <b>웹 앱</b>.</li>
+    <li>아래처럼 설정하고 <b>배포</b>:
+      <ul>
+        <li>설명: <code>영업노트 v1</code></li>
+        <li>다음 사용자 인증 정보로 실행: <b>웹 앱을 액세스하는 사용자</b></li>
+        <li>액세스 권한이 있는 사용자: <b>mymp.co.kr 내 모든 사용자</b></li>
+      </ul></li>
+    <li>완료 창의 <b>웹 앱 URL</b>(<code>https://script.google.com/a/macros/mymp.co.kr/s/…/exec</code>)을 복사해 새 탭에서 엽니다.</li>
+    <li>이름을 입력하고 가망건 하나를 저장해 봅니다. 시트 <code>가망건</code> 탭에 한 줄이 생기면 설치 완료입니다.</li>
+  </ol>
+  <div class="warn"><b>실행 사용자는 꼭 "웹 앱을 액세스하는 사용자"</b>로 두세요. "나"로 하면 팀원 모두의 메일이 관리자 Gmail로 나가고, 팀 현황도 한 사람으로 집계됩니다.</div>
+  <div class="note">메일 발송은 받는 주소를 본인 주소로 해서 먼저 테스트하세요. 보낸편지함에 "받는사람: 나"로 남고 받은편지함에도 들어옵니다.</div>
+</section>
+
+<section id="update">
+  <h2>코드 업데이트</h2>
+  <p class="who">새 버전 코드를 받았을 때 · 링크는 그대로 유지</p>
+  <ol class="steps">
+    <li>바뀐 파일(<code>Code.gs</code> 또는 <code>Index.html</code>)의 내용을 모두 지우고 새 내용을 붙여넣은 뒤 <b>Ctrl + S</b>.</li>
+    <li><b>배포 → 배포 관리</b>를 엽니다.</li>
+    <li>오른쪽 위 <b>✏️ 연필(수정)</b>을 누릅니다. 누르기 전에는 칸이 회색으로 잠겨 있고 배포 버튼도 눌리지 않습니다.</li>
+    <li>맨 위 <b>버전</b>을 눌러 <b>새 버전</b>을 고르고, 설명에 <code>영업노트 v2</code>처럼 적습니다.</li>
+    <li><b>배포</b> → 앱 화면을 새로고침합니다.</li>
+  </ol>
+  <div class="warn"><b>"새 배포"를 만들면 링크가 바뀝니다.</b> 업데이트는 항상 "배포 관리 → 수정 → 새 버전"으로 하세요. 버전을 "버전 1" 그대로 두면 수정한 코드가 반영되지 않습니다.</div>
+  <div class="note">Code.gs가 바뀌어 시트에 새 열이 필요한 경우(예: <code>연락시간</code>)에는 앱을 처음 열 때 자동으로 맨 오른쪽에 추가됩니다. 기존 데이터는 그대로입니다.</div>
+</section>
+
+<section id="settings">
+  <h2>설정 바꾸기</h2>
+  <p class="who">대부분 시트나 Code.gs 맨 위에서 바꿉니다</p>
+  <table>
+    <tr><th>바꿀 것</th><th>어디서</th><th>반영</th></tr>
+    <tr><td>메일·카톡 문구</td><td>시트 <code>템플릿</code> 탭에서 행 추가·수정·삭제. 유형은 <code>이메일</code> 또는 <code>카톡</code>, 이메일은 <code>제목</code>도 입력. 본문에 <code>{업체명}</code> <code>{담당자}</code> <code>{영업자}</code> 사용 가능</td><td>앱 새로고침</td></tr>
+    <tr><td>하루 목표(도장 수)</td><td>Code.gs 맨 위 <code>var DAILY_GOAL = 5;</code></td><td>저장 후 <a href="#update">새 버전 배포</a></td></tr>
+    <tr><td>회사명</td><td>Code.gs 맨 위 <code>var COMPANY_NAME = '엠피인터랙티브';</code> · 보내는 사람 이름(예: 정순홍 (엠피인터랙티브))에 쓰임</td><td>저장 후 새 버전 배포</td></tr>
+    <tr><td>내 이름</td><td>앱 오른쪽 위 "○○○ 님" 누르기</td><td>바로</td></tr>
+    <tr><td>가망건 데이터</td><td>시트 <code>가망건</code> 탭에서 직접 수정 가능. 머리글(1행)과 <code>ID</code> 열은 건드리지 마세요</td><td>앱 새로고침</td></tr>
+  </table>
+  <div class="note">기본 템플릿의 회사명은 처음 설치할 때 템플릿 탭에 글자로 들어갑니다. <code>COMPANY_NAME</code>을 나중에 바꿨다면 템플릿 탭의 문구도 직접 고쳐 주세요.</div>
+</section>
+
+<section id="share">
+  <h2>팀원 공유</h2>
+  <ol class="steps">
+    <li><code>영업노트_DB</code> 시트(또는 폴더)를 팀원에게 <b>편집자</b>로 공유합니다. 각자 본인 계정으로 실행되므로 편집 권한이 없으면 저장되지 않습니다.</li>
+    <li>웹 앱 URL과 사용 가이드(<code>guide.html</code>)를 전달합니다.</li>
+    <li>팀원은 링크를 열고 권한 허용 → 이름 입력 → 휴대폰 <b>홈 화면에 추가</b>하면 끝입니다.</li>
+  </ol>
+  <div class="note">팀원이 편집자이므로 원본 시트를 직접 볼 수 있습니다. 팀 공용 영업 데이터라는 점을 안내해 주세요.</div>
+</section>
+
+<section id="faq">
+  <h2>막혔을 때</h2>
+  <table>
+    <tr><th>증상</th><th>해결</th></tr>
+    <tr><td>실행했는데 시트 탭이 안 생김</td><td>함수 선택칸이 <code>doGet</code>이었을 가능성이 큽니다. <code>getInitialData</code>로 바꿔 다시 실행하세요.</td></tr>
+    <tr><td>배포 관리에서 배포 버튼이 회색</td><td>오른쪽 위 ✏️ 연필을 먼저 눌러 수정 모드로 바꾸세요.</td></tr>
+    <tr><td>코드를 고쳤는데 앱이 그대로</td><td>Ctrl + S로 저장했는지, 배포 관리에서 버전을 <b>새 버전</b>으로 했는지 확인하세요.</td></tr>
+    <tr><td>메일이 보낸편지함에 없음</td><td>웹 앱 URL(<code>…/exec</code>)로 접속했는지 확인하세요. 실행 사용자가 "나"로 되어 있으면 관리자 Gmail에서 나갑니다. Apps Script 왼쪽 <b>실행</b> 메뉴에서 <code>sendEmails</code> 기록도 볼 수 있습니다.</td></tr>
+    <tr><td>"불러오지 못했습니다"</td><td>회사 계정으로 로그인했는지, 시트가 편집자로 공유됐는지 확인하세요.</td></tr>
+    <tr><td>"이 앱은 Google에서 확인하지 않았습니다"</td><td><b>고급 → 영업노트(으)로 이동</b>. 회사 관리자가 막아 두었다면 허용을 요청하세요.</td></tr>
+    <tr><td>"남은 발송 가능 건수" 오류</td><td>구글 정책상 하루 약 1,500통까지입니다. 다음 날 나눠 보내세요.</td></tr>
+  </table>
+</section>
+
+<footer>영업노트 설정 가이드 · 문의: 정순홍 (tnsghd7439@mymp.co.kr)</footer>
+</div>
+</body>
+</html>
