@@ -86,6 +86,10 @@
   .btn.dark { background:var(--ink); border-color:var(--ink); color:#fff; flex:1; padding:16px; font-size:16.5px; box-shadow:0 6px 18px rgba(23,34,43,.22); }
   .btn.pri { background:var(--teal); border-color:var(--teal); color:#fff; }
   .btn.link { color:#1a4fd6; }
+  .btn.del { color:var(--hot); border-color:#f3c5ba; background:#fff; }
+  .from { background:#f7f9fa; border:1px solid var(--line); border-radius:10px; padding:10px 14px; font-size:13.5px; margin-top:12px; color:var(--ink-2); }
+  .from b { color:var(--ink); }
+  .from ul { margin:4px 0 0; padding-left:18px; max-height:110px; overflow-y:auto; }
   .btn:disabled { opacity:.5; cursor:default; }
   .btns { display:flex; gap:10px; margin-top:18px; }
   .btns > * { flex:1; }
@@ -133,7 +137,7 @@
   .info dt { width:76px; flex-shrink:0; color:var(--ink-3); }
   .info dd { margin:0; flex:1; min-width:0; word-break:break-all; white-space:pre-wrap; }
   .info a { color:var(--teal); font-weight:600; }
-  .acts { display:grid; grid-template-columns:repeat(4,1fr); gap:8px; margin-top:14px; }
+  .acts { display:grid; grid-template-columns:repeat(5,1fr); gap:8px; margin-top:14px; }
   .acts .btn { padding:11px 4px; font-size:14px; }
   .box { border:1px solid var(--line); border-radius:12px; padding:4px 14px 14px; margin-top:16px; }
   .box > label.l:first-child { margin-top:12px; }
@@ -155,6 +159,7 @@
   .spin { width:34px; height:34px; border:3px solid var(--line); border-top-color:var(--teal); border-radius:50%; animation:spin .8s linear infinite; margin:0 auto 12px; }
   @keyframes spin { to { transform:rotate(360deg); } }
   [hidden] { display:none !important; }
+  @media (max-width:520px) { .acts { grid-template-columns:repeat(3,1fr); } }
   @media (max-width:420px) { .stamps { gap:6px; } .stamp { width:28px; height:28px; font-size:13px; } .goal { gap:10px; } .acts .btn { font-size:13px; } }
 </style>
 </head>
@@ -197,6 +202,7 @@
   <div class="bottom-in" id="bottomNew"><button class="btn dark" id="newBtn">+ 가망건 저장</button></div>
   <div class="bottom-in" id="bottomSel" hidden>
     <button class="btn" id="clearSel" style="flex:0 0 auto">선택 해제</button>
+    <button class="btn del" id="delSel" style="flex:0 0 auto">삭제</button>
     <button class="btn dark" id="mailSel">이메일 보내기</button>
   </div>
 </div>
@@ -233,6 +239,7 @@ function parseD(s) { var p = s.split('-'); return new Date(+p[0], +p[1] - 1, +p[
 function fmtD(d) { return d.getFullYear() + '-' + ('0' + (d.getMonth() + 1)).slice(-2) + '-' + ('0' + d.getDate()).slice(-2); }
 function addDays(s, n) { var d = parseD(s); d.setDate(d.getDate() + n); return fmtD(d); }
 function diffDays(a, b) { return Math.round((parseD(a) - parseD(b)) / 86400000); }
+function hm(t) { if (!t) return ''; var p = t.split(':'), h = +p[0]; return (h < 12 ? '오전 ' : '오후 ') + (h % 12 || 12) + '시' + (p[1] !== '00' ? ' ' + (+p[1]) + '분' : ''); }
 function md(s) { var p = s.split('-'); return (+p[1]) + '/' + (+p[2]); }
 function fill(text, lead) {
   return String(text || '').replace(/\{업체명\}/g, lead.company || '').replace(/\{담당자\}/g, lead.contact || '담당자').replace(/\{영업자\}/g, S.me.name || '');
@@ -286,6 +293,11 @@ function renderHeader(popIndex) {
 }
 
 function dueLabel(l) {
+  var r = dueLabel0(l);
+  if (l.nextTime && l.nextDate && l.nextDate >= S.today) r.t += ' ' + l.nextTime;
+  return r;
+}
+function dueLabel0(l) {
   if (!l.nextDate) return { t: '연락일 없음', hot: false };
   var d = diffDays(l.nextDate, S.today);
   var done = l.lastContact && l.lastContact >= l.nextDate;
@@ -312,7 +324,8 @@ function section(title, list, emptyText, showOwner) {
     (list.length ? list.map(function (l) { return rowHtml(l, showOwner); }).join('') : '<div class="empty">' + emptyText + '</div>') + '</div>';
 }
 
-function byNext(a, b) { return (a.nextDate || '9999') < (b.nextDate || '9999') ? -1 : (a.nextDate || '9999') > (b.nextDate || '9999') ? 1 : (a.createdAt < b.createdAt ? 1 : -1); }
+function nextKey(l) { return (l.nextDate || '9999') + ' ' + (l.nextTime || '99:99'); }
+function byNext(a, b) { var x = nextKey(a), y = nextKey(b); return x < y ? -1 : x > y ? 1 : (a.createdAt < b.createdAt ? 1 : -1); }
 
 function renderToday() {
   var my = S.leads.filter(mine);
@@ -398,6 +411,7 @@ document.querySelector('.main').addEventListener('click', function (e) {
 $('newBtn').onclick = function () { openLeadForm(); };
 $('clearSel').onclick = function () { S.selected = {}; renderTab(); renderBottom(); };
 $('mailSel').onclick = function () { openEmail(selIds()); };
+$('delSel').onclick = function () { confirmDelete(selIds()); };
 $('meBtn').onclick = function () { openName(false); };
 $('dim').onclick = function () { closeSheet(); };
 document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeSheet(); });
@@ -430,6 +444,11 @@ var QUICK = [['내일', 1], ['3일 후', 3], ['1주 후', 7], ['2주 후', 14]];
 function datePicker(idp, cur) {
   var h = '<div class="pills dates" id="' + idp + 'Q">' + QUICK.map(function (q) { var v = addDays(S.today, q[1]); return '<button type="button" class="pill' + (v === cur ? ' on' : '') + '" data-v="' + v + '">' + q[0] + '</button>'; }).join('') + '</div>';
   return h + '<input class="in" type="date" id="' + idp + '" value="' + esc(cur || '') + '">';
+}
+var QTIME = ['10:00', '14:00', '16:00'];
+function timePicker(idp, cur) {
+  return '<div class="pills dates" id="' + idp + 'Q" style="margin-top:8px">' + QTIME.map(function (t) { return '<button type="button" class="pill' + (t === cur ? ' on' : '') + '" data-v="' + t + '">' + hm(t) + '</button>'; }).join('') +
+    '<button type="button" class="pill' + (cur ? '' : ' on') + '" data-v="">시간 없음</button></div><input class="in" type="time" id="' + idp + '" value="' + esc(cur || '') + '">';
 }
 function bindDate(idp) {
   bindPills($(idp + 'Q'), function (v) { $(idp).value = v; });
@@ -473,18 +492,19 @@ function openLeadForm(id) {
     '<label class="l">가망도</label><div class="pills" id="fGradeP">' + pills(S.grades, f.grade, 'g-') + '</div>' +
     '<label class="l">상태</label><div class="pills" id="fStatusP">' + pills(S.statuses, f.status) + '</div>' +
     '<label class="l">다음 연락일</label>' + datePicker('fNext', l.nextDate) +
+    '<label class="l">연락 시간 <span style="font-weight:400;color:var(--ink-3)">(선택)</span></label>' + timePicker('fTime', l.nextTime) +
     '<label class="l">메모</label><textarea class="in" id="fMemo" placeholder="현재 광고 상황, 불만, 예산, 결정권자, 다음에 할 말">' + esc(l.memo) + '</textarea>' +
     '<div class="btns"><button class="btn" data-close>취소</button><button class="btn pri" id="fSave">저장</button></div>');
   bindPills($('fGradeP'), function (v) { f.grade = v; });
   bindPills($('fStatusP'), function (v) { f.status = v; });
-  bindDate('fNext');
+  bindDate('fNext'); bindDate('fTime');
   if (!id) $('fCompany').focus();
   $('fSave').onclick = function () {
     var company = $('fCompany').value.trim();
     if (!company) { $('fCompany').focus(); toast('업체명을 입력하세요'); return; }
     var em = $('fEmail').value.trim();
     if (em && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(em)) { $('fEmail').focus(); toast('이메일 주소를 확인하세요'); return; }
-    var data = { id: id || '', company: company, contact: $('fContact').value, phone: $('fPhone').value, email: em, industry: $('fIndustry').value, grade: f.grade, status: f.status, nextDate: $('fNext').value, memo: $('fMemo').value };
+    var data = { id: id || '', company: company, contact: $('fContact').value, phone: $('fPhone').value, email: em, industry: $('fIndustry').value, grade: f.grade, status: f.status, nextDate: $('fNext').value, nextTime: $('fNext').value ? $('fTime').value : '', memo: $('fMemo').value };
     var b = this; busy(b, true, '저장 중…');
     var before = myStats().today;
     call('saveLead', data).then(function (saved) {
@@ -516,7 +536,7 @@ function openDetail(id) {
     ['담당자', esc(l.contact)],
     ['연락처', l.phone ? '<a href="tel:' + esc(l.phone.replace(/[^\d+]/g, '')) + '" id="dTel">' + esc(l.phone) + '</a>' : ''],
     ['이메일', esc(l.email)], ['업종', esc(l.industry)],
-    ['다음 연락', l.nextDate ? esc(l.nextDate) + ' <span class="due' + (dl.hot ? ' hot' : '') + '">(' + esc(dl.t) + ')</span>' : '<span class="due">미정</span>'],
+    ['다음 연락', l.nextDate ? esc(l.nextDate) + (l.nextTime ? ' ' + esc(hm(l.nextTime)) : '') + ' <span class="due' + (dl.hot ? ' hot' : '') + '">(' + esc(dl.t) + ')</span>' : '<span class="due">미정</span>'],
     ['영업자', esc(l.ownerName)], ['등록', esc(String(l.createdAt).slice(0, 16))], ['메모', esc(l.memo)]
   ].filter(function (r) { return r[1]; });
   openSheet(head(esc(l.company)) +
@@ -526,13 +546,15 @@ function openDetail(id) {
       (l.phone ? '<a class="btn" id="aCall" href="tel:' + esc(l.phone.replace(/[^\d+]/g, '')) + '">전화 걸기</a>' : '<button class="btn" disabled>전화 걸기</button>') +
       '<button class="btn" id="aKakao">카톡·문자</button>' +
       '<button class="btn" id="aMail"' + (l.email ? '' : ' disabled') + '>이메일</button>' +
-      '<button class="btn" id="aEdit">수정</button></div>' +
+      '<button class="btn" id="aEdit">수정</button>' +
+      '<button class="btn del" id="aDel">삭제</button></div>' +
     '<label class="l">상태 바꾸기</label><div class="pills" id="dStatus">' + pills(S.statuses, l.status) + '</div>' +
     '<div class="box"><label class="l">통화 기록</label><textarea class="in" id="lgText" style="min-height:64px" placeholder="한 줄 메모 (예: 다음 주 예산 확정 후 미팅 가능)"></textarea>' +
-    '<label class="l">다음 연락일</label>' + datePicker('lgNext', '') +
+    '<label class="l">다음 연락일</label>' + datePicker('lgNext', '') + timePicker('lgTime', '') +
     '<div class="btns" style="margin-top:12px"><button class="btn pri" id="lgSave">기록 저장</button></div></div>' +
     '<label class="l">연락 기록</label><div class="logs" id="logs"><div class="empty">불러오는 중…</div></div>');
-  bindDate('lgNext');
+  bindDate('lgNext'); bindDate('lgTime');
+  $('aDel').onclick = function () { confirmDelete([l.id]); };
   var logCall = function () { quickLog(l.id, '전화', l.phone + ' 전화 걸기'); };
   if ($('aCall')) $('aCall').addEventListener('click', logCall);
   if ($('dTel')) $('dTel').addEventListener('click', logCall);
@@ -543,10 +565,10 @@ function openDetail(id) {
     call('setLeadStatus', l.id, v).then(function (u) { upsert(u); renderAll(); toast('상태: ' + v); }).catch(function (e) { toast(errMsg(e)); });
   });
   $('lgSave').onclick = function () {
-    var t = $('lgText').value.trim(), nd = $('lgNext').value;
+    var t = $('lgText').value.trim(), nd = $('lgNext').value, nt = nd ? $('lgTime').value : '';
     if (!t && !nd) { $('lgText').focus(); toast('메모나 다음 연락일을 입력하세요'); return; }
     var b = this; busy(b, true, '저장 중…');
-    call('addLog', l.id, '통화', t, nd).then(function (u) { upsert(u); renderAll(); toast('기록했습니다'); openDetail(l.id); })
+    call('addLog', l.id, '통화', t, nd, nt).then(function (u) { upsert(u); renderAll(); toast('기록했습니다'); openDetail(l.id); })
       .catch(function (e) { busy(b, false); toast(errMsg(e)); });
   };
   loadLogs(l.id);
@@ -556,13 +578,32 @@ function loadLogs(id) {
   call('getLogs', id).then(function (logs) {
     var box = $('logs'); if (!box) return;
     box.innerHTML = logs.length ? logs.map(function (g) {
-      return '<div class="log"><span class="t">' + esc(String(g.at).slice(0, 16)) + ' · ' + esc(g.userName) + '</span><p><span class="k">' + esc(g.type) + '</span>' + esc(g.content) + (g.nextDate ? ' <span class="t">→ 다음 연락 ' + esc(md(g.nextDate)) + '</span>' : '') + '</p></div>';
+      return '<div class="log"><span class="t">' + esc(String(g.at).slice(0, 16)) + ' · ' + esc(g.userName) + '</span><p><span class="k">' + esc(g.type) + '</span>' + esc(g.content) + (g.nextDate ? ' <span class="t">→ 다음 연락 ' + esc(md(g.nextDate)) + (g.nextTime ? ' ' + esc(g.nextTime) : '') + '</span>' : '') + '</p></div>';
     }).join('') : '<div class="empty">아직 연락 기록이 없습니다</div>';
   }).catch(function (e) { var box = $('logs'); if (box) box.innerHTML = '<div class="empty">' + esc(errMsg(e)) + '</div>'; });
 }
 
 function quickLog(id, type, content) {
   call('addLog', id, type, content, '').then(function (u) { upsert(u); renderHeader(); renderTab(); if ($('logs')) loadLogs(id); }).catch(function () {});
+}
+
+// ===== 삭제 =====
+function confirmDelete(ids) {
+  var leads = ids.map(leadById).filter(Boolean);
+  if (!leads.length) return;
+  var others = leads.filter(function (l) { return !mine(l); });
+  openSheet(head('가망건 삭제') +
+    '<p class="sub"><b>' + leads.length + '곳</b>을 삭제할까요?</p><p class="sub2">' + esc(leads.map(function (l) { return l.company; }).join(', ')) + '</p>' +
+    '<div class="warnbox">삭제하면 연락 기록까지 함께 지워지고 되돌릴 수 없습니다.' + (others.length ? '<br>다른 팀원의 가망건 ' + others.length + '곳이 포함되어 있습니다.' : '') + ' 거래가 끝난 곳은 상태를 \'종료\'로 바꾸는 것도 방법입니다.</div>' +
+    '<div class="btns"><button class="btn" data-close>취소</button><button class="btn del" id="delOk" style="background:var(--hot);color:#fff;border-color:var(--hot)">삭제</button></div>');
+  $('delOk').onclick = function () {
+    var b = this; busy(b, true, '삭제 중…');
+    call('deleteLeads', leads.map(function (l) { return l.id; })).then(function (gone) {
+      S.leads = S.leads.filter(function (l) { return gone.indexOf(l.id) < 0; });
+      gone.forEach(function (id) { delete S.selected[id]; });
+      closeSheet(true); renderAll(); toast(gone.length + '곳을 삭제했습니다');
+    }).catch(function (e) { busy(b, false); toast(errMsg(e)); });
+  };
 }
 
 // ===== 카톡·문자 =====
@@ -621,6 +662,7 @@ function openEmail(ids) {
   openSheet(head('이메일 보내기') +
     '<p class="sub"><b>' + targets.length + '곳</b>에 한 통씩 따로 보냅니다</p><p class="sub2">' + esc(names.slice(0, 6).join(', ') + (names.length > 6 ? ' 외 ' + (names.length - 6) + '곳' : '')) + '</p>' +
     (missing.length ? '<div class="warnbox">이메일 주소가 없는 ' + missing.length + '곳(' + esc(missing.map(function (l) { return l.company; }).join(', ')) + ')은 제외됩니다.</div>' : '') +
+    '<div class="from">보내는 사람: <b>' + esc(S.me.email) + '</b> (내 Gmail)<br>받는 사람 ' + targets.length + '곳 · 업체마다 따로 발송:<ul>' + targets.map(function (l) { return '<li>' + esc(l.company) + ' — ' + esc(l.email) + '</li>'; }).join('') + '</ul></div>' +
     '<label class="l">템플릿</label><select class="in" id="eT">' + tpls.map(function (t, i) { return '<option value="' + i + '">' + esc(t.name) + '</option>'; }).join('') + '<option value="-1">직접 쓰기</option></select>' +
     '<label class="l">제목</label><input class="in" id="eSubj">' +
     '<label class="l">내용</label><textarea class="in" id="eBody" style="min-height:200px"></textarea>' +
@@ -633,7 +675,7 @@ function openEmail(ids) {
   $('eSubj').onfocus = function () { lastFocus = this; };
   $('eBody').onfocus = function () { lastFocus = this; };
   var setT = function () { var i = +$('eT').value, t = tpls[i]; $('eSubj').value = i >= 0 && t ? t.subject : ''; $('eBody').value = i >= 0 && t ? t.body : ''; preview(); };
-  var preview = function () { $('ePvBox').textContent = '제목: ' + fill($('eSubj').value, targets[0]) + '\n받는 사람: ' + targets[0].email + '\n\n' + fill($('eBody').value, targets[0]); };
+  var preview = function () { $('ePvBox').textContent = '보내는 사람: ' + S.me.email + '\n받는 사람: ' + targets[0].email + '\n제목: ' + fill($('eSubj').value, targets[0]) + '\n\n' + fill($('eBody').value, targets[0]); };
   $('eT').onchange = setT; $('eSubj').oninput = preview; $('eBody').oninput = preview; setT();
   $('sheetBody').querySelector('.ph').onclick = function (e) {
     var ph = e.target.getAttribute('data-ph'); if (!ph) return;
@@ -662,9 +704,11 @@ function openEmail(ids) {
       var ok = r.results.filter(function (x) { return x.ok; }), bad = r.results.filter(function (x) { return !x.ok; });
       ok.forEach(function (x) { delete S.selected[x.id]; });
       renderAll();
-      if (!bad.length) { closeSheet(true); toast(ok.length + '곳에 보냈습니다'); return; }
-      openSheet(head('발송 결과') + '<p class="sub">' + ok.length + '곳 성공 · <b style="color:var(--hot)">' + bad.length + '곳 실패</b></p>' +
-        '<div class="warnbox">' + bad.map(function (x) { return esc(x.company) + ': ' + esc(x.error); }).join('<br>') + '</div><div class="btns"><button class="btn" data-close>닫기</button></div>');
+      openSheet(head('발송 결과') + '<p class="sub">' + ok.length + '곳 성공' + (bad.length ? ' · <b style="color:var(--hot)">' + bad.length + '곳 실패</b>' : '') + '</p>' +
+        '<div class="from">보내는 사람: <b>' + esc(r.from || S.me.email) + '</b> (보낸편지함에 남음)' +
+        (ok.length ? '<ul>' + ok.map(function (x) { return '<li>✓ ' + esc(x.company) + ' — ' + esc(x.to) + '</li>'; }).join('') + '</ul>' : '') + '</div>' +
+        (bad.length ? '<div class="warnbox">' + bad.map(function (x) { return esc(x.company) + ' (' + esc(x.to) + '): ' + esc(x.error); }).join('<br>') + '</div>' : '') +
+        '<div class="btns"><button class="btn" data-close>닫기</button></div>');
     }).catch(function (e) { $('sheet').removeAttribute('data-lock'); busy(b, false); toast(errMsg(e), 4000); });
   };
 }

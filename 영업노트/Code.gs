@@ -18,7 +18,7 @@ var SHEETS = {
       ['id', 'ID'], ['createdAt', '등록일시'], ['ownerEmail', '영업자이메일'], ['ownerName', '영업자'],
       ['company', '업체명'], ['contact', '담당자'], ['phone', '연락처'], ['email', '이메일'],
       ['industry', '업종'], ['grade', '가망도'], ['status', '상태'], ['nextDate', '다음연락일'],
-      ['memo', '메모'], ['lastContact', '최근연락일'], ['updatedAt', '수정일시']
+      ['nextTime', '연락시간'], ['memo', '메모'], ['lastContact', '최근연락일'], ['updatedAt', '수정일시']
     ]
   },
   logs: {
@@ -26,7 +26,7 @@ var SHEETS = {
     cols: [
       ['id', 'ID'], ['leadId', '가망건ID'], ['company', '업체명'], ['at', '일시'],
       ['userEmail', '영업자이메일'], ['userName', '영업자'], ['type', '방식'],
-      ['content', '내용'], ['nextDate', '다음연락일']
+      ['content', '내용'], ['nextDate', '다음연락일'], ['nextTime', '연락시간']
     ]
   },
   templates: {
@@ -123,6 +123,7 @@ function saveLead(input) {
     grade: GRADES.indexOf(input.grade) >= 0 ? input.grade : '중',
     status: STATUSES.indexOf(input.status) >= 0 ? input.status : '신규',
     nextDate: normDate_(input.nextDate),
+    nextTime: normTime_(input.nextTime),
     memo: String(input.memo || '').trim(),
     updatedAt: now_()
   };
@@ -159,6 +160,19 @@ function setLeadStatus(leadId, status) {
   });
 }
 
+/** 가망건 삭제(여러 개 가능). 연락 기록도 함께 지운다. 삭제한 ID 목록을 돌려준다. */
+function deleteLeads(ids) {
+  ids = (ids || []).map(String);
+  if (!ids.length) return [];
+  return withLock_(function () {
+    var leads = readAll_('leads').filter(function (l) { return ids.indexOf(l.id) >= 0; });
+    var logs = readAll_('logs').filter(function (l) { return ids.indexOf(l.leadId) >= 0; });
+    deleteRows_('logs', logs);
+    deleteRows_('leads', leads);
+    return leads.map(function (l) { return l.id; });
+  });
+}
+
 /** 업체별 연락 기록(최신순) */
 function getLogs(leadId) {
   return readAll_('logs')
@@ -169,12 +183,12 @@ function getLogs(leadId) {
 
 /**
  * 연락 기록 추가. type: 통화/전화/카톡/문자/이메일/메모
- * nextDate 를 주면 가망건의 다음 연락일도 바꾼다. 업데이트된 가망건을 돌려준다.
+ * nextDate(·nextTime) 를 주면 가망건의 다음 연락일도 바꾼다. 업데이트된 가망건을 돌려준다.
  */
-function addLog(leadId, type, content, nextDate) {
+function addLog(leadId, type, content, nextDate, nextTime) {
   var me = currentUser_();
   return withLock_(function () {
-    return addLogNoLock_(leadId, type, content, nextDate, me);
+    return addLogNoLock_(leadId, type, content, nextDate, me, nextTime);
   });
 }
 
@@ -214,37 +228,39 @@ function sendEmails(payload) {
       var opts = { name: me.name ? me.name + ' (' + COMPANY_NAME + ')' : COMPANY_NAME, htmlBody: textToHtml_(body) };
       if (blobs.length) opts.attachments = blobs;
       GmailApp.sendEmail(lead.email, subject, body, opts);
-      results.push({ id: lead.id, company: lead.company, ok: true });
+      results.push({ id: lead.id, company: lead.company, to: lead.email, ok: true });
     } catch (e) {
-      results.push({ id: lead.id, company: lead.company, ok: false, error: String(e.message || e) });
+      results.push({ id: lead.id, company: lead.company, to: lead.email, ok: false, error: String(e.message || e) });
     }
   });
 
   var updated = withLock_(function () {
     return results.filter(function (r) { return r.ok; }).map(function (r) {
       var lead = byId[r.id];
-      var note = '[메일] ' + fill_(subjectT, lead, me.name) + (blobs.length ? ' (첨부 ' + blobs.length + '개)' : '');
+      var note = '[메일] ' + fill_(subjectT, lead, me.name) + (blobs.length ? ' (첨부 ' + blobs.length + '개)' : '') +
+        '\n보낸 사람 ' + me.email + ' → 받는 사람 ' + lead.email;
       return addLogNoLock_(r.id, '이메일', note, '', me);
     });
   });
 
-  return { results: results, leads: updated, quota: remainingQuota_() };
+  return { from: me.email, results: results, leads: updated, quota: remainingQuota_() };
 }
 
 // ===== 내부 함수 =====
 
-function addLogNoLock_(leadId, type, content, nextDate, me) {
+function addLogNoLock_(leadId, type, content, nextDate, me, nextTime) {
   var lead = findById_('leads', leadId);
   if (!lead) throw new Error('가망건을 찾을 수 없습니다.');
   var at = now_();
   nextDate = normDate_(nextDate);
+  nextTime = nextDate ? normTime_(nextTime) : '';
   appendRow_('logs', {
     id: newId_(), leadId: leadId, company: lead.company, at: at,
     userEmail: me.email, userName: me.name, type: type || '메모',
-    content: String(content || '').trim(), nextDate: nextDate
+    content: String(content || '').trim(), nextDate: nextDate, nextTime: nextTime
   });
   lead.lastContact = at.slice(0, 10);
-  if (nextDate) lead.nextDate = nextDate;
+  if (nextDate) { lead.nextDate = nextDate; lead.nextTime = nextTime; }
   if (type === '이메일' && lead.status === '신규') lead.status = '연락중';
   lead.updatedAt = at;
   writeRow_('leads', lead._row, lead);
@@ -311,7 +327,7 @@ function ensureSheets_() {
   Object.keys(SHEETS).forEach(function (key) {
     var def = SHEETS[key];
     var sh = ss.getSheetByName(def.name);
-    if (sh) return;
+    if (sh) { addMissingColumns_(sh, def); return; }
     sh = ss.insertSheet(def.name);
     var headers = def.cols.map(function (c) { return c[1]; });
     sh.getRange(1, 1, 1, headers.length).setValues([headers])
@@ -330,6 +346,25 @@ function ensureSheets_() {
   if (first.getName().match(/^(시트1|Sheet1)$/) && first.getLastRow() === 0 && ss.getSheets().length > 1) {
     ss.deleteSheet(first);
   }
+}
+
+/** 새 버전에서 추가된 열(예: 연락시간)이 기존 시트에 없으면 맨 오른쪽에 붙인다. */
+function addMissingColumns_(sh, def) {
+  var width = Math.max(sh.getLastColumn(), 1);
+  var header = sh.getRange(1, 1, 1, width).getValues()[0];
+  def.cols.forEach(function (c) {
+    if (header.indexOf(c[1]) >= 0) return;
+    var col = header.length + 1;
+    sh.getRange(1, col).setValue(c[1]).setFontWeight('bold').setBackground('#e3efee');
+    sh.getRange(1, col, sh.getMaxRows(), 1).setNumberFormat('@');
+    header.push(c[1]);
+  });
+}
+
+function deleteRows_(key, rows) {
+  var sh = sheet_(key);
+  rows.map(function (r) { return r._row; }).sort(function (a, b) { return b - a; })
+    .forEach(function (n) { sh.deleteRow(n); });
 }
 
 /** 시트 전체를 [{key:value, _row}] 로 읽는다. 머리글 이름으로 열을 찾으므로 열 순서가 바뀌어도 동작. */
@@ -367,6 +402,7 @@ function headerIndex_(key, headerRow) {
 function cell_(v, field) {
   var tz = Session.getScriptTimeZone();
   if (v instanceof Date) {
+    if (/Time$/.test(field)) return Utilities.formatDate(v, tz, 'HH:mm');
     var dateOnly = /Date$|^lastContact$/.test(field);
     return Utilities.formatDate(v, tz, dateOnly ? 'yyyy-MM-dd' : 'yyyy-MM-dd HH:mm:ss');
   }
@@ -424,6 +460,13 @@ function normDate_(v) {
   var m = String(v).match(/^(\d{4})-(\d{1,2})-(\d{1,2})/);
   if (!m) return '';
   return m[1] + '-' + ('0' + m[2]).slice(-2) + '-' + ('0' + m[3]).slice(-2);
+}
+
+function normTime_(v) {
+  if (!v) return '';
+  if (v instanceof Date) return Utilities.formatDate(v, Session.getScriptTimeZone(), 'HH:mm');
+  var m = String(v).match(/^(\d{1,2}):(\d{2})/);
+  return m ? ('0' + m[1]).slice(-2) + ':' + m[2] : '';
 }
 
 function clean_(v) {
