@@ -666,7 +666,7 @@ function openEmail(ids) {
     '<label class="l">템플릿</label><select class="in" id="eT">' + tpls.map(function (t, i) { return '<option value="' + i + '">' + esc(t.name) + '</option>'; }).join('') + '<option value="-1">직접 쓰기</option></select>' +
     '<label class="l">제목</label><input class="in" id="eSubj">' +
     '<label class="l">내용</label><textarea class="in" id="eBody" style="min-height:200px"></textarea>' +
-    '<div class="ph">자동으로 채워짐: <button type="button" data-ph="{업체명}">{업체명}</button><button type="button" data-ph="{담당자}">{담당자}</button><button type="button" data-ph="{영업자}">{영업자}</button></div>' +
+    (targets.length === 1 ? '<div class="ph">업체 정보가 자동으로 채워졌습니다. 필요하면 바로 고쳐 쓰세요. 넣기:' : '<div class="ph">아래 칸은 업체마다 자동으로 바뀌어 발송됩니다:') + ' <button type="button" data-ph="{업체명}">{업체명}</button><button type="button" data-ph="{담당자}">{담당자}</button><button type="button" data-ph="{영업자}">{영업자}</button></div>' +
     '<label class="l">첨부 파일</label><input type="file" id="eFile" multiple><div class="files" id="eFiles"></div>' +
     '<details class="pv" id="ePv"><summary>' + esc(targets[0].company) + '에 가는 메일 미리보기</summary><div class="pv-box" id="ePvBox"></div></details>' +
     '<div class="btns"><button class="btn" data-close>취소</button><button class="btn pri" id="eSend">' + targets.length + '곳에 보내기</button></div>' +
@@ -674,11 +674,15 @@ function openEmail(ids) {
   var lastFocus = $('eBody');
   $('eSubj').onfocus = function () { lastFocus = this; };
   $('eBody').onfocus = function () { lastFocus = this; };
-  var setT = function () { var i = +$('eT').value, t = tpls[i]; $('eSubj').value = i >= 0 && t ? t.subject : ''; $('eBody').value = i >= 0 && t ? t.body : ''; preview(); };
+  // 한 곳에만 보낼 때는 {업체명} 등을 실제 값으로 바로 채워서 보여준다. 여러 곳이면 업체마다 서버에서 바뀐다.
+  var one = targets.length === 1 ? targets[0] : null;
+  var put = function (text) { return one ? fill(text, one) : text; };
+  var setT = function () { var i = +$('eT').value, t = tpls[i]; $('eSubj').value = i >= 0 && t ? put(t.subject) : ''; $('eBody').value = i >= 0 && t ? put(t.body) : ''; preview(); };
   var preview = function () { $('ePvBox').textContent = '보내는 사람: ' + S.me.email + '\n받는 사람: ' + targets[0].email + '\n제목: ' + fill($('eSubj').value, targets[0]) + '\n\n' + fill($('eBody').value, targets[0]); };
   $('eT').onchange = setT; $('eSubj').oninput = preview; $('eBody').oninput = preview; setT();
   $('sheetBody').querySelector('.ph').onclick = function (e) {
     var ph = e.target.getAttribute('data-ph'); if (!ph) return;
+    ph = put(ph);
     var el = lastFocus, s = el.selectionStart || el.value.length, en = el.selectionEnd || s;
     el.value = el.value.slice(0, s) + ph + el.value.slice(en); el.focus(); el.setSelectionRange(s + ph.length, s + ph.length); preview();
   };
